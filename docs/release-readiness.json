@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "release": "4.4.13-php74-r1",
+  "architecture": "linux/amd64",
+  "checks": {
+    "target_php_and_compatibility_evidence": true,
+    "unchanged_upstream_payload_verified": true,
+    "inherited_application_risks_disclosed": true,
+    "image_delta_review_complete": false,
+    "smtp_smoke_complete": false,
+    "source_license_handoff_complete": false
+  },
+  "note": "These tracked checks are human-reviewed release assertions, not a replacement for the automated tests. No Mautic dependency modernization or zero-advisory target is required."
+}

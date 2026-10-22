@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+# Exact distribution revision, not the unchanged upstream version banner.
+for package in php7.4-cli php7.4-common; do
+    actual="$(dpkg-query -W -f='${Version}' "$package")"
+    test "$actual" = "$PHP_PACKAGE_VERSION" || {
+        echo >&2 "Refusing runtime with an unexpected PHP package revision."
+        exit 1
+    }
+done
+case "$MAUTIC_VARIANT" in
+    apache) package=libapache2-mod-php7.4 ;;
+    fpm) package=php7.4-fpm ;;
+    *) echo >&2 "Unknown runtime variant."; exit 1 ;;
+esac
+test "$(dpkg-query -W -f='${Version}' "$package")" = "$PHP_PACKAGE_VERSION"

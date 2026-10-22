@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+# Debian envvars intentionally references optional unset variables.
+. "${APACHE_ENVVARS:-/etc/apache2/envvars}"
+mkdir -p "$APACHE_RUN_DIR" "$APACHE_LOCK_DIR"
+rm -f "$APACHE_PID_FILE"
+exec /usr/sbin/apache2 -DFOREGROUND "$@"
