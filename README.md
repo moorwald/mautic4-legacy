@@ -6,7 +6,7 @@ Unofficial community Apache/FPM images for Mautic 4.4.13 with a PHP 7.4 emergenc
 **This is fully AI created. Plese use at your own risk.** It was created to provide a way of securing older, non supported Mautic4 installations against the two PHP CVEs. Nothing more. See below. 
 
 ## Status
-Both amd64 images have been uploaded by the successful manual release, with four-case compatibility/SMTP tests and bounded image review passed. The [source/licence handoff](https://github.com/moorwald/mautic4-legacy/releases/tag/v4.4.13-php74-r1) is public. **GHCR public visibility and anonymous image pulls are still pending.** See [dated results and actual publication status](docs/status.md). Universal drop-in compatibility is not certified. First release: linux/amd64 only. Mautic 4 is end-of-life; these images do not restore application support, provide an ELTS contract or fix every application/dependency vulnerability.
+Both amd64 images have been uploaded by the successful manual release, with four-case compatibility/SMTP tests and bounded image review passed. The [source/licence handoff](https://github.com/moorwald/mautic4-legacy/releases/tag/v4.4.13-php74-r1) is public. **Both Apache and FPM images are public and verified pullable without login.** See [dated results and actual publication status](docs/status.md). Universal drop-in compatibility is not certified. First release: linux/amd64 only. Mautic 4 is end-of-life; these images do not restore application support, provide an ELTS contract or fix every application/dependency vulnerability.
 
 ## Intended compatibility
 See [the compatibility contract](docs/compatibility.md). Existing /var/www/html volumes are authoritative and are NOT automatically upgraded to 4.4.13. The image bundles 4.4.13 for fresh installations. A PHP runtime replacement is not an application/schema upgrade.
@@ -27,7 +27,12 @@ After checking the actual release/public-package status, retain your database, v
 image: ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-apache
 # or the matching -fpm tag for an existing FPM deployment
 ```
-Registry tags require the manual release and independent public-visibility check; see status above. First take a matching database/application/config/media backup and prove restore. Keep automatic migrations disabled. Existing 4.4.12 application code remains 4.4.12; upgrade that code separately through an approved Mautic procedure if needed. Custom setups are outside the tested matrix.
+Anonymous pulls and the exact patched PHP package revision were verified on 22 October 2026. Both variants match the images tested in the release workflow. First take a matching database/application/config/media backup and prove restore. Keep automatic migrations disabled. Existing 4.4.12 application code remains 4.4.12; upgrade that code separately through an approved Mautic procedure if needed. Custom setups are outside the tested matrix.
+
+### Digest-pinned references
+Use the matching variant for your existing stack; these references identify the exact tested r1 manifests:
+- Apache: `ghcr.io/moorwald/mautic4-legacy@sha256:ea89ebf356cd9941a20844deb3c1ee72383f157f0f1adac0515884879c9f8987`
+- FPM, with your existing reverse proxy: `ghcr.io/moorwald/mautic4-legacy@sha256:7da372e93e6ba82fd3ab5623c5cb4355abc11ea3e34791cc5ee2e2ddbf77530e`
 
 ## Security warning
 The purpose is limited to PHP CVE-2026-109618 and CVE-2026-109619, not further Mautic 4 development or dependency upgrades. The unchanged 4.4.13 payload has inherited application/library advisories, including critical findings. Read the [scoped assessment and metadata corrections](docs/security-assessment.md). Those inherited risks are disclosed, not automatically treated as a demand to modernize the unsupported application. PHP backports do not make the whole legacy application safe. Operators retain responsibility for their code, plugins, broader security and migration.

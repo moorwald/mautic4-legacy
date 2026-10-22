@@ -1,7 +1,7 @@
 # Emergency image release status: 22 October 2026
 
 ## Verdict
-Both linux/amd64 images were pushed by successful manual workflow [39785595624](https://github.com/moorwald/mautic4-legacy/actions/runs/39785595624), using source commit `35a1b154a3b705754c827037a101a9064d66c32a`. All scoped checks were repeated successfully, including four SMTP cases and cleanup. The [public GitHub Release](https://github.com/moorwald/mautic4-legacy/releases/tag/v4.4.13-php74-r1) includes the complete source/licence handoff and both pushed manifests. **GHCR public visibility is still pending: anonymous registry access returned HTTP 401 after publication. Do not claim public image availability yet.** This is NOT a production recommendation or complete drop-in/security certification.
+Both linux/amd64 images were pushed by successful manual workflow [39785595624](https://github.com/moorwald/mautic4-legacy/actions/runs/39785595624), using source commit `35a1b154a3b705754c827037a101a9064d66c32a`. All scoped checks were repeated successfully, including four SMTP cases and cleanup. The [public GitHub Release](https://github.com/moorwald/mautic4-legacy/releases/tag/v4.4.13-php74-r1) includes the complete source/licence handoff and both pushed manifests. **Public availability verified on 2026-10-22 at 14:38:26 UTC:** both manifests and Docker pulls succeed without credentials, the pulled image IDs match the tested release/source manifest, and exact PHP CLI/common plus Apache/FPM package revisions match the patched build lock. Sven completed the organization/package visibility change. The earlier HTTP 401 is resolved. This is NOT a production recommendation or complete drop-in/security certification.
 
 Uploaded tags:
 - `ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-apache`
@@ -12,12 +12,15 @@ Publication evidence:
 - Manual release report `m4qa-7fe9e62e74/report.json`, completed 2026-10-22 13:21:50 UTC, all four cases/SMTP and cleanup successful.
 - Pushed manifest config IDs match BOTH the tested image review and corresponding-source manifest: Apache `sha256:69287377d29f0b1068cdb05dba54823568d808511867ffe80ebc867e2a819834`; FPM `sha256:dbe1795d69dba62662a1ac98f365f6210403cbb1c4e670dec1c65a4d5b4f604f`. These are config IDs, not registry manifest digests.
 - Public source bundle: 751,697,920 bytes, SHA-256 `0de137e52e106eda37198546d19fcb19e05fc82d785bce662c1f2be48860ee3a`. Public source-manifest/SHA256SUMS downloads were verified anonymously against the publication evidence.
-- Remaining action: owner opens [package settings](https://github.com/orgs/moorwald/packages/container/mautic4-legacy/settings), sets Public, then both anonymous manifests/pulls and runtime package revisions must be verified. The local gh session lacks read:packages and the isolated browser is not authenticated; no privileges were silently extended.
+- Public access evidence: `artifacts/public-availability.json`, also attached to the GitHub Release. Anonymous HTTP manifest bodies match their registry SHA-256 digest headers. Actual Docker pulls use an isolated temporary config with an explicit empty ghcr.io auth entry and no credential store/helper. Containers run only disposable offline revision checks; no production service or data is touched. No agent privileges were extended.
+- Apache manifest digest: `sha256:ea89ebf356cd9941a20844deb3c1ee72383f157f0f1adac0515884879c9f8987`.
+- FPM manifest digest: `sha256:7da372e93e6ba82fd3ab5623c5cb4355abc11ea3e34791cc5ee2e2ddbf77530e`.
+- Both downloaded images pass check-runtime. Independently queried php7.4-cli, php7.4-common and the respective web SAPI package all equal `1:7.4.33-31+0~20261021.121+debian12~1.gbpe9c428`. The public registry lists exactly the two versioned r1 tags; no latest tag or ARM64 variant.
 
 ## Verified matrix
 26 static/audit/assessment/release/source regression tests pass. Build inputs match the recorded lock; only the exact images tested by the manual job were pushed. The local preparation evidence below is supplemented by the actual publication evidence above.
 
-Evidence: ignored `artifacts/m4qa-4762527a15/report.json`, completed 2026-10-22 13:07:25 UTC. Built/tested runtime source: `2c9f119`; final CI repeats all tests on the actual publication commit. Four cases: Apache/FPM x fresh Mautic 4.4.13 / existing Mautic 4.4.12.
+Evidence: ignored `artifacts/m4qa-4762527a15/report.json`, completed 2026-10-22 13:07:25 UTC. Built/tested preparation runtime source: `2c9f119`; final CI repeated all tests on publication commit `35a1b15`. Four cases: Apache/FPM x fresh Mautic 4.4.13 / existing Mautic 4.4.12.
 
 - Exact patched PHP CLI/common and Apache/FPM package revision checked, not merely upstream banner 7.4.33.
 - All PHP extensions loaded by the corresponding original official v4 image remain available; SQLite was retained, FPM mcrypt is separately pinned. Composer 2.10.3 is available.

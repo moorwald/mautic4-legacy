@@ -7,7 +7,7 @@ Sven authorized the public moorwald GitHub repository and a repository-driven im
   - ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-apache
   - ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-fpm
 
-This approval does not authorize changes to running installations, new Mautic features or dependency modernization. The first pair was uploaded by manual workflow 39785595624 with its public source Release; package public visibility/anonymous retrieval remain pending as recorded in status.md.
+This approval does not authorize changes to running installations, new Mautic features or dependency modernization. The first pair was uploaded by manual workflow 39785595624 with its public source Release; Sven completed public visibility, and both anonymous manifest requests, Docker pulls and exact runtime revision checks passed on 22 October 2026 as recorded in status.md.
 
 ## What ordinary pushes do
 Pushes to main and pull requests run a read-only verification job: build both amd64 images, test isolated fresh/existing installations, report inherited advisories and verify the byte-identical upstream payload. Evidence artifacts exclude passwords, raw SQL, customer data, downloaded archives and general logs.
@@ -38,7 +38,11 @@ GitHub Actions/organization policies can restrict package creation. Do not bypas
 ## GHCR visibility is separate from repository visibility
 GitHub's Container Registry initially creates packages as private, even when they inherit access permissions from a public source repository. The image source label links the package to this repo BEFORE publication, but does not itself make the package public.
 
+If Public is disabled by organization administrators, an organization owner must first allow **Public** under **Organization Settings → Packages → Package Creation**: https://github.com/organizations/moorwald/settings/packages. This permits public packages; it does not automatically publish existing private packages.
+
 After the first push, an authorized package/org administrator must open https://github.com/orgs/moorwald/packages/container/mautic4-legacy/settings and set visibility to Public. The available REST/GraphQL APIs do not offer this visibility change, and the isolated agent browser is not authenticated; Sven may need to perform this one UI step. GitHub documents this as an irreversible visibility change. Then test anonymous manifest access and pulls from a context with no registry credentials, and independently confirm both PHP package revisions. Do not announce a public image based only on authenticated pulls.
+
+The r1 pair completed this sequence on 22 October 2026. Public verification evidence and immutable manifest digests are in [status](status.md) and the release attachment public-availability.json. Neither image was rebuilt or retagged during this post-publication verification.
 
 Source: https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility
 

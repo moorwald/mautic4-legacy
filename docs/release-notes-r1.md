@@ -2,7 +2,7 @@
 
 This release addresses **PHP CVE-2026-109618 and CVE-2026-109619** for legacy Mautic 4 Docker deployments. It is not an official Mautic release, renewed Mautic 4 support, ELTS or an application-dependency modernization.
 
-Image tags (availability requires public GHCR visibility; verify anonymous pulls):
+Public image tags, verified pullable without login on 22 October 2026:
 - `ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-apache`
 - `ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-fpm`
 
@@ -21,4 +21,11 @@ Before replacing an image, back up and prove restore of BOTH the database and pe
 - `SHA256SUMS`: outer bundle/manifest hashes; a second checksum list is inside the bundle.
 - `published-*-manifest.json`: actual pushed manifests. No floating latest tag or ARM64 release is supplied.
 
-Public-package visibility and anonymous retrieval are checked independently after the push; source release availability alone is not an assertion that an image is anonymously pullable.
+### Public retrieval verified
+Both anonymous manifest access and actual Docker pulls passed at 2026-10-22 14:38:26 UTC, using an isolated credential-free Docker configuration. Downloaded IDs match the tested images and corresponding-source manifest. CLI/common and the respective web SAPI package independently match the exact patched PHP revision above.
+
+Digest-pinned references:
+- Apache: `ghcr.io/moorwald/mautic4-legacy@sha256:ea89ebf356cd9941a20844deb3c1ee72383f157f0f1adac0515884879c9f8987`
+- FPM: `ghcr.io/moorwald/mautic4-legacy@sha256:7da372e93e6ba82fd3ab5623c5cb4355abc11ea3e34791cc5ee2e2ddbf77530e`
+
+See attached `public-availability.json` for the bounded verification evidence. This post-publication check did not rebuild or overwrite either released image, source bundle or version tag.
