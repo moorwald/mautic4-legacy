@@ -20,6 +20,10 @@ if (isset($_FILES['fixture'])) {
 echo json_encode([
     'php' => PHP_VERSION,
     'sapi' => PHP_SAPI,
+    'effective_uid' => posix_geteuid(),
+    'display_errors' => ini_get('display_errors'),
+    'display_startup_errors' => ini_get('display_startup_errors'),
+    'expose_php' => ini_get('expose_php'),
     'extensions' => get_loaded_extensions(),
     'memory_limit' => ini_get('memory_limit'),
     'upload_max_filesize' => ini_get('upload_max_filesize'),

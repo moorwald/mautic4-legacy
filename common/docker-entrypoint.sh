@@ -14,6 +14,11 @@ cat <<EOF > /usr/local/etc/php/php.ini
 date.timezone = "${PHP_INI_DATE_TIMEZONE}"
 always_populate_raw_post_data = -1
 zend.assertions = -1
+display_errors = Off
+display_startup_errors = Off
+log_errors = On
+error_log = /proc/self/fd/2
+expose_php = Off
 memory_limit = ${PHP_MEMORY_LIMIT}
 file_uploads = On
 upload_max_filesize = ${PHP_MAX_UPLOAD}

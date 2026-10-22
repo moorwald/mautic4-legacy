@@ -9,6 +9,9 @@ runs:
     - name: Run the four-case isolated compatibility matrix
       shell: bash
       run: python3 tests/integration.py
+    - name: Review the bounded container/runtime delta
+      shell: bash
+      run: python3 tools/review_image.py
     - name: Report inherited application advisories without hiding tool errors
       shell: bash
       run: |

@@ -16,6 +16,7 @@ Replacement candidates for the standard mautic/mautic:v4-apache and v4-fpm contr
 - Debian 12/Sury packages rather than EOL Debian 11 and stale official PHP 7.4 binaries.
 - No database password/configuration dump in startup/error logs or password argument in the database helper command.
 - Existing installed application is not overwritten. A partially populated non-application volume fails closed rather than being silently merged.
+- Generated PHP configuration disables public error/startup-error display and version banners, while logging errors to stderr. Explicit operator configuration mounts remain authoritative.
 - No fallback to an older PHP revision. Runtime package revision is checked at build/start.
 - PHP security backport disables session upload-progress bookkeeping and changes out-of-memory cleanup. It does not disable ordinary multipart uploads. Test worker recovery and application uploads separately.
 - Supported default commands are apache2-foreground and php-fpm; unrelated commands bypass application bootstrap.
@@ -29,4 +30,4 @@ For BOTH Apache and FPM:
 5. PHP override behavior, cron on/off and process stop, no secret values in logs, invalid config fails without dumping credentials.
 6. No publicly exposed test service; no real email, payment, CRM/webhook or telemetry traffic.
 
-Completed evidence belongs in artifacts/ and docs/status.md. Passing only some gates does not certify the matrix. Full application/OS vulnerability assessment, plugins, multiarch, live migration and independent review remain release gates.
+Completed evidence belongs in artifacts/ and docs/status.md. Passing only some gates does not certify the matrix. The bounded image/runtime review and release checks are required. A full application audit, plugin modernization, ARM64 and live migration are outside this release scope; see docs/security-assessment.md.

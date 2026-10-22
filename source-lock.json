@@ -1,0 +1,25 @@
+{
+  "archives": [
+    {
+      "name": "mautic-4.4.13-source.tar.gz",
+      "repository": "mautic/mautic",
+      "commit": "181701cd7ca43122c151e8a46700b223379fa8d1",
+      "url": "https://codeload.github.com/mautic/mautic/tar.gz/181701cd7ca43122c151e8a46700b223379fa8d1",
+      "sha256": "97b1b0ed6592691a14f217cf42894873d3c98589caae132fbbcabff9bf3b077b"
+    },
+    {
+      "name": "composer-2.10.3-source.tar.gz",
+      "repository": "composer/composer",
+      "commit": "f0de0bf90226853b841672f086d8b58b02332504",
+      "url": "https://codeload.github.com/composer/composer/tar.gz/f0de0bf90226853b841672f086d8b58b02332504",
+      "sha256": "a82a8bac08dd0ad0727640b5d1412c28394966771233410c8e12988ecf79c740"
+    },
+    {
+      "name": "upstream-docker-mautic-source.tar.gz",
+      "repository": "mautic/docker-mautic",
+      "commit": "244effba9cf43ff6c848d164ae4cc4d9c3d55f52",
+      "url": "https://codeload.github.com/mautic/docker-mautic/tar.gz/244effba9cf43ff6c848d164ae4cc4d9c3d55f52",
+      "sha256": "af513ea442419808cb6ba9e3de5969cd13c8d523e9d0f029a48d988b22601c2e"
+    }
+  ]
+}

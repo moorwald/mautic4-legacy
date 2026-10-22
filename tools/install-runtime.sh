@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 test "$(dpkg --print-architecture)" = amd64 || {
-    echo >&2 "This pinned prototype is approved for amd64 only."
+    echo >&2 "This release supports amd64 only."
     exit 1
 }
 export DEBIAN_FRONTEND=noninteractive

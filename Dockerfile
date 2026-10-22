@@ -43,7 +43,7 @@ ARG SOURCE_REVISION=local-uncommitted
 LABEL org.opencontainers.image.source="https://github.com/moorwald/mautic4-legacy" \
     org.opencontainers.image.revision=${SOURCE_REVISION} \
     org.opencontainers.image.title="Unofficial moorwald Mautic 4 legacy image" \
-    org.opencontainers.image.description="Unsupported Mautic 4 compatibility prototype; not an official Mautic release" \
+    org.opencontainers.image.description="Unofficial end-of-life Mautic 4; PHP CVE-2026-109618/109619 mitigation only; no application support" \
     org.opencontainers.image.version="4.4.13-php74-r1" \
     org.opencontainers.image.licenses="GPL-3.0-or-later"
 

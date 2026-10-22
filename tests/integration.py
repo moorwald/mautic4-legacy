@@ -101,6 +101,18 @@ class Suite:
     def copy_fixture(self, app, filename, target):
         self.docker("cp", str(ROOT / "tests" / filename), app + ":" + target)
 
+    def smtp_smoke(self, app, label):
+        self.copy_fixture(app, "smtp-smoke.php", "/tmp/smtp-smoke.php")
+        result = self.execute(app, "php", "/tmp/smtp-smoke.php", label, user="www-data")
+        assert json.loads(result.stdout)["mautic_sample_mail_helper"] is True
+        inbox = json.loads(self.execute(self.prefix + "-smtp", "php", "-r",
+                                       'readfile("/tmp/inbox.json");').stdout)
+        matching = [message for message in inbox if message["subject"] == "M4 SMTP " + label]
+        assert len(matching) == 1, "SMTP sink did not receive exactly one application message"
+        assert matching[0]["recipient"] == label + "@example.invalid"
+        return {"application_helper": True, "sink_received_exactly_once": True,
+                "message_sha256": matching[0]["message_sha256"]}
+
     def runtime_tests(self, variant):
         image = IMAGE + variant
         for package in ["php7.4-cli", "php7.4-common",
@@ -218,7 +230,9 @@ class Suite:
                "MAUTIC_ADMIN_USERNAME": "qa", "MAUTIC_ADMIN_FIRSTNAME": "Synthetic",
                "MAUTIC_ADMIN_LASTNAME": "Fixture", "PHP_MEMORY_LIMIT": "384M",
                "PHP_INI_DATE_TIMEZONE": "Europe/London",
-               "MAUTIC_CONFIG_UPDATE_STABILITY": "stable"}
+               "MAUTIC_CONFIG_UPDATE_STABILITY": "stable",
+               "MAUTIC_CONFIG_MAILER_HOST": "smtp", "MAUTIC_CONFIG_MAILER_PORT": "2525",
+               "MAUTIC_CONFIG_MAILER_TRANSPORT": "smtp", "MAUTIC_CONFIG_MAILER_SPOOL_TYPE": "file"}
         options = ["--network-alias", "app", "--mount", "type=volume,src=" + volume + ",dst=/var/www/html",
                    "--mount", "type=bind,src=" + str(overrides) + ",dst=/usr/local/etc/php/conf.d/zz-qa.ini,readonly"]
         source_database = self.initialize_existing(variant, volume, env) if existing else None
@@ -247,6 +261,9 @@ class Suite:
         runtime = json.loads(probe)
         assert runtime["sapi"] == ("apache2handler" if variant == "apache" else "fpm-fcgi")
         assert runtime["php"] == "7.4.33"
+        assert runtime["effective_uid"] == 33, "Web requests do not run as www-data"
+        for setting in ["display_errors", "display_startup_errors", "expose_php"]:
+            assert runtime[setting] in ("", "0"), "Unsafe default PHP error/banner exposure"
         assert REQUIRED_EXTENSIONS <= set(runtime["extensions"]), "Missing web PHP extensions"
         assert runtime["memory_limit"] == "384M"
         assert runtime["timezone"] == "Europe/London"
@@ -281,6 +298,7 @@ class Suite:
         commands = ["mautic:segments:update", "mautic:campaigns:rebuild", "mautic:campaigns:trigger"]
         for command in commands:
             self.execute(app, "php", "bin/console", command, "--no-interaction", user="www-data")
+        smtp = self.smtp_smoke(app, label)
         self.execute(app, "sh", "-c",
                      "printf 'keep-me' > media/files/qa-preserve.txt; chown www-data:www-data media/files/qa-preserve.txt")
         before = self.fingerprint(app)
@@ -320,7 +338,7 @@ class Suite:
             cron_state = json.loads(self.docker("inspect", "--format", "{{json .State}}", app).stdout)
             assert cron_state["ExitCode"] != 137, "Cron-enabled shutdown required SIGKILL"
         self.report["scenarios"].append({"name": label, "ok": True,
-             "application_version": expected_version, "login": True,
+             "application_version": expected_version, "login": True, "smtp": smtp,
              "web_sapi": runtime["sapi"], "web_extensions": True,
              "php_override": True, "multipart_upload": True, "oom_worker_recovery": True,
              "empty_installation_cli_commands": commands, "no_credentials_in_logs": True,
@@ -357,6 +375,10 @@ class Suite:
                 self.docker("pull", "--platform", "linux/amd64", image, timeout=300)
             self.docker("network", "create", "--internal", self.network)
             self.network_created = True
+            self.start(self.prefix + "-smtp", IMAGE + "apache", options=[
+                "--network-alias", "smtp", "--mount",
+                "type=bind,src=" + str(ROOT / "tests") + ",dst=/qa,readonly"],
+                command=["php", "/qa/smtp-sink.php"])
             db = self.prefix + "-db"
             self.start(db, LOCK["test_database_image"],
                        env={"MARIADB_ROOT_PASSWORD": self.db_password, "MARIADB_ROOT_HOST": "%"})
