@@ -9,11 +9,13 @@ import lzma
 import pathlib
 import re
 import shutil
+import socket
 import subprocess
 import tarfile
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
-import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REPOSITORIES = [
@@ -30,10 +32,12 @@ $paths = array_merge(glob('/usr/share/doc/*/copyright'), glob('/usr/share/common
 foreach ($paths as $path) {
     if (is_file($path)) { $result[substr($path, 1)] = base64_encode(file_get_contents($path)); }
 }
-$phar = new Phar('/usr/local/bin/composer');
+// Phar's constructor requires a recognised suffix for this extensionless executable.
+copy('/usr/local/bin/composer', '/tmp/composer.phar');
+$phar = new Phar('/tmp/composer.phar');
 foreach (new RecursiveIteratorIterator($phar) as $path => $file) {
     if (preg_match('~/(LICENSE[^/]*|COPYING[^/]*)$~i', $path)) {
-        $result['composer-phar/'.substr($path, strlen('phar:///usr/local/bin/composer/'))] =
+        $result['composer-phar/'.substr($path, strlen('phar:///tmp/composer.phar/'))] =
             base64_encode(file_get_contents($path));
     }
 }
@@ -72,13 +76,22 @@ def digest_file(path):
 
 def download(url, path, expected=None, size=None):
     path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists() and expected is not None:
-        if digest_file(path) != expected:
-            raise ValueError("Cached source hash mismatch: " + path.name)
+    if path.exists() and expected is not None and digest_file(path) == expected:
         return
     temporary = path.with_name(path.name + ".partial")
-    with urllib.request.urlopen(url, timeout=90) as response, temporary.open("wb") as target:
-        shutil.copyfileobj(response, target)
+    # Hundreds of independent downloads exposed transient EAI_AGAIN on WSL DNS.
+    # Retry that specific resolver failure, never checksum failures or HTTP errors.
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(url, timeout=90) as response, temporary.open("wb") as target:
+                shutil.copyfileobj(response, target)
+            break
+        except urllib.error.URLError as error:
+            if not (isinstance(error.reason, socket.gaierror) and
+                    error.reason.errno == socket.EAI_AGAIN and attempt < 2):
+                raise
+            print("Temporary DNS failure; retrying public source: " + path.name, flush=True)
+            time.sleep(2 ** attempt)
     if expected is not None and digest_file(temporary) != expected:
         raise ValueError("Downloaded source hash mismatch: " + path.name)
     if size is not None and temporary.stat().st_size != size:

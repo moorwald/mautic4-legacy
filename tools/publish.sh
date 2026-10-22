@@ -12,6 +12,15 @@ TAG=v4.4.13-php74-r1
 test -s artifacts/source-handoff/source-bundle.tar
 test -s artifacts/source-handoff/source-manifest.json
 (cd artifacts/source-handoff && sha256sum -c SHA256SUMS)
+# Bind corresponding sources to this commit AND the current tested image IDs.
+python3 - <<'PY'
+import json, subprocess
+manifest = json.load(open("artifacts/source-handoff/source-manifest.json"))
+assert manifest["source_revision"] == subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+for variant, record in manifest["images"].items():
+    current = subprocess.check_output(["docker", "image", "inspect", "--format", "{{.Id}}", record["reference"]], text=True).strip()
+    assert current == record["id"], "Image changed after source collection"
+PY
 # Check both revisions before uploading either member of the pair.
 for variant in apache fpm; do
     local_image="moorwald/mautic4-legacy:4.4.13-php74-r1-${variant}"

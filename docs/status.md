@@ -1,7 +1,7 @@
-# Local prototype status: 22 October 2026
+# Emergency image release preparation: 22 October 2026
 
 ## Verdict
-Both linux/amd64 images build locally and the bounded synthetic compatibility matrix passes. Public source/CI and a manual GHCR release path have been authorized and prepared; no image has been published. This is NOT a production recommendation or a complete drop-in/security certification.
+The scoped release checks are complete: linux/amd64 Apache/FPM compatibility including isolated SMTP, container/runtime review and exact-source/licence handoff. Sven authorized the first manual publication and public GHCR visibility. At this preparation snapshot no image has been pushed; the manual workflow must repeat the checks on its exact commit. Public package visibility and anonymous retrieval remain separate post-push checks. This is NOT a production recommendation or a complete drop-in/security certification.
 
 Local tags:
 - `moorwald/mautic4-legacy:4.4.13-php74-r1-apache`
@@ -10,17 +10,17 @@ Local tags:
 ## Verified matrix
 Static/audit/assessment/release-gate regression tests pass (see current CI results for the exact count). Build inputs match the recorded lock; local builds are not pushed registry manifests.
 
-Evidence: ignored `artifacts/m4qa-20e6d50316/report.json`, completed 2026-10-22 10:13:48 UTC. Four cases: Apache/FPM x fresh Mautic 4.4.13 / existing Mautic 4.4.12.
+Evidence: ignored `artifacts/m4qa-4762527a15/report.json`, completed 2026-10-22 13:07:25 UTC. Built/tested runtime source: `2c9f119`; final CI repeats all tests on the actual publication commit. Four cases: Apache/FPM x fresh Mautic 4.4.13 / existing Mautic 4.4.12.
 
 - Exact patched PHP CLI/common and Apache/FPM package revision checked, not merely upstream banner 7.4.33.
 - All PHP extensions loaded by the corresponding original official v4 image remain available; SQLite was retained, FPM mcrypt is separately pinned. Composer 2.10.3 is available.
 - Real application installation and authenticated synthetic administrator login pass over Apache/FPM (nginx test proxy for FPM).
-- Web PHP extensions, timezone/memory configuration and a mounted conf.d override pass.
+- Web PHP extensions, timezone/memory configuration and a mounted conf.d override pass. Actual Apache/FPM requests run as www-data UID 33. Generated defaults disable error/startup-error display and PHP banners; errors log to stderr.
 - Ordinary synthetic multipart upload works. Controlled OOM exits without executing the shutdown callback; subsequent web requests succeed.
 - Cron-off, cron-on and graceful stop pass; migrations remain disabled. Partial/incomplete volume and unexpected PHP package revision fail closed; configuration failures do not dump credentials.
 - Existing application/configuration/original upload fingerprints match across restart and actual container replacement. Each comparison covers 23,123 immutable/original files, excluding documented caches/logs. Configuration comparison is normalized, not a promise of byte-identical local.php formatting.
 - For the existing case, the ORIGINAL image's PHP CLI first installs Mautic 4.4.12 and initializes its anonymous HTTP kernel without opening a listener. A full native SQL-dump hash before/after the runtime swap matches. No new application/schema version is silently installed.
-- Bounded segments/campaign rebuild/trigger commands pass on the otherwise empty fixture. This is not evidence of a populated customer campaign completing or actual mail delivery.
+- Bounded segments/campaign rebuild/trigger commands pass on the otherwise empty fixture. The actual Mautic mail helper also sends one synthetic message per case to an isolated SMTP receiver, which checks recipient/subject and records only a message hash. All four cases were received exactly once. This does not certify populated customer campaigns, external SMTP/TLS/authentication providers or deliverability.
 - No test ports published; internal Docker network only. No production data or external mail/CRM/payment/advertising traffic. Known test containers/network/volumes cleaned up.
 
 ## Why baseline initialization matters
@@ -43,11 +43,13 @@ Reproduce: `python3 tools/audit_installed.py`. A nonzero result for advisories/a
 ## Scope and first-publication gates
 Sven explicitly set a PHP-only emergency-mitigation scope, not continued Mautic 4 development or ELTS. The [assessment](security-assessment.md) separates inherited application risk from changes introduced by this project. **Zero application advisories, library modernization and a complete application audit are not release criteria.**
 
-Required before first publication:
-- Scoped review of our container/runtime changes, target-CVE provenance and bounded regression evidence. New exposure, credential leakage, data loss or an unpatched SAPI remains a blocker.
-- Bounded additional workflow/SMTP smoke checks needed to support any broader compatibility claim; no application feature or dependency changes are implied.
-- Corresponding-source/license delivery, explicit emergency-only/no-support/retirement policy and accurate not-official/residual-risk notices.
-- GitHub public-source and GHCR publication-path approval was given on 22 October. The manual image publish job remains blocked by [release-readiness.json](release-readiness.json) until the pending scoped checks are reviewed. Ordinary pushes cannot publish images. See [publishing](publishing.md).
+Completed first-release review:
+- Container/runtime delta: signed/pinned PHP packages and unchanged app payload, expected ports/volume/entrypoint, no baked credential variables, root-owned helpers not writable by web UID, no packaged test endpoints/socket, remote PHP includes disabled, FFI restricted to preload. No new exposed endpoint or inherited critical-library execution mode was enabled in the bounded review. Root bootstrap remains necessary for the legacy contract; web workers run as UID 33. Evidence: `artifacts/image-review.json` and the four-case matrix. This is not a zero-vulnerability OS scanner result.
+- PHP source handoff independently checks Debian/Sury source-index signatures and file hashes. The exact PHP packaging archive contains active `0164-Avoid-state-corruption-via-bailout.patch` in its series, names both CVEs and has SHA-256 `f299907678a90feef3d69d8686f666a45430fa2d556dc28f59f0ad52b7e1b382`.
+- SMTP: true Mautic sample-mail helper to an internal synthetic sink, all four cases exactly once. No external delivery claim.
+- Sources/licences: all 236 binary package/version combinations resolve to 152 exact source packages, 487 checked source files. Local bundle approximately 717 MiB, with repository evidence, upstream source/build trees, installed copyright/licence texts and own committed recipes. Final CI regenerates from its actual images. Sven confirmed Docker-Mautic uses Mautic's licence. See [source handoff](source-handoff.md) and NOTICE.md.
+- No ongoing maintenance/support commitment or automatic releases. This is the single scoped emergency revision; migrate to a supported Mautic release. Existing tags must not be silently overwritten.
+- [release-readiness.json](release-readiness.json) records the reviewed assertions. Ordinary pushes still cannot publish. The manually selected publication repeats verification, collects exact sources, pushes the tested IDs and attaches the handoff to a GitHub Release. See [publishing](publishing.md).
 
 Not certified and not implicitly added to this project's scope:
 - A full audit or repair of Mautic 4 application/library vulnerabilities. Operators retain responsibility for their installation.

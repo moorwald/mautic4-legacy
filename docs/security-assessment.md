@@ -1,6 +1,6 @@
 # Scoped security assessment: PHP emergency images for Mautic 4
 
-Date: 22 October 2026. Local amd64 Apache/FPM prototype; no image publication or production change. Public source and a manual GHCR publication path were subsequently authorized.
+Date: 22 October 2026. Scoped amd64 Apache/FPM emergency-release assessment. No production change. First publication is authorized and follows the reviewed manual path; actual registry visibility is recorded separately in status.md.
 
 ## 1. Scope decision
 
@@ -95,7 +95,7 @@ The bundled application contains `composer/composer` **2.2.12** and its own advi
 
 Still required for an honest first publication: a scoped review of our image/runtime changes and PHP-fix evidence, the bounded compatibility smoke checks appropriate to the claim, corresponding-source/license handling, accurate warnings/source references and explicit manual release approval through the configured publication path. A full green audit of unsupported Mautic 4 is NOT required by this scope and is not promised.
 
-The assessment identifies no changed application payload and no newly enabled critical-library attack path in its bounded checks. This is not a statement that the new OS/runtime or arbitrary deployment configuration has zero vulnerabilities. The remaining image-layer review must stay focused on what we introduce.
+The assessment identifies no changed application payload and no newly enabled critical-library attack path in its bounded checks. This is not a statement that the new OS/runtime or arbitrary deployment configuration has zero vulnerabilities. The completed bounded image-layer review stays focused on what we introduce; evidence and limits are recorded in status.md.
 
 ## 6. Suggested public scope notice
 

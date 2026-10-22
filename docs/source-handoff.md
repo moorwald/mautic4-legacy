@@ -1,6 +1,6 @@
 # Source, licence and redistribution handoff
 
-The community image recipe/modifications are GPL-3.0-or-later. The exact upstream Mautic licence and its third-party notices are preserved in LICENSE and in the unchanged application distribution. Other bundled components retain their own licences; the image label does not relicense PHP, Debian packages or third-party libraries.
+The community image recipe/modifications are GPL-3.0-or-later. Sven confirmed on 2026-10-22 that Docker-Mautic follows the same Mautic GPL licence. This is the recorded licensing basis for the preserved upstream Docker components despite the pinned snapshot lacking a separate LICENSE file; attribution and source remain intact. The exact upstream Mautic licence and its third-party notices are preserved in LICENSE and in the unchanged application distribution. Other bundled components retain their own licences; the image label does not relicense PHP, Debian packages or third-party libraries.
 
 Each published r1 pair is accompanied by a public GitHub Release source bundle and checksum manifest, assembled from the actual tested images before pushing them. It contains:
 
