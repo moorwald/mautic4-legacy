@@ -3,7 +3,7 @@
 Unofficial community Apache/FPM images for Mautic 4.4.13 with a PHP 7.4 emergency mitigation. Not affiliated with or supported by the Mautic project. Addressed scope: PHP CVE-2026-109618 and CVE-2026-109619 only.
 
 ## Status
-Both local builds, the four-case synthetic compatibility/SMTP suite and the bounded image review pass; exact-source/licence handoff is prepared. See [dated results and actual publication status](docs/status.md). Universal drop-in compatibility is not certified. First release: linux/amd64 only. Mautic 4 is end-of-life; these images do not restore application support, provide an ELTS contract or fix every application/dependency vulnerability.
+Both amd64 images have been uploaded by the successful manual release, with four-case compatibility/SMTP tests and bounded image review passed. The [source/licence handoff](https://github.com/moorwald/mautic4-legacy/releases/tag/v4.4.13-php74-r1) is public. **GHCR public visibility and anonymous image pulls are still pending.** See [dated results and actual publication status](docs/status.md). Universal drop-in compatibility is not certified. First release: linux/amd64 only. Mautic 4 is end-of-life; these images do not restore application support, provide an ELTS contract or fix every application/dependency vulnerability.
 
 ## Intended compatibility
 See [the compatibility contract](docs/compatibility.md). Existing /var/www/html volumes are authoritative and are NOT automatically upgraded to 4.4.13. The image bundles 4.4.13 for fresh installations. A PHP runtime replacement is not an application/schema upgrade.

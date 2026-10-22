@@ -1,14 +1,21 @@
-# Emergency image release preparation: 22 October 2026
+# Emergency image release status: 22 October 2026
 
 ## Verdict
-The scoped release checks are complete: linux/amd64 Apache/FPM compatibility including isolated SMTP, container/runtime review and exact-source/licence handoff. Sven authorized the first manual publication and public GHCR visibility. At this preparation snapshot no image has been pushed; the manual workflow must repeat the checks on its exact commit. Public package visibility and anonymous retrieval remain separate post-push checks. This is NOT a production recommendation or a complete drop-in/security certification.
+Both linux/amd64 images were pushed by successful manual workflow [39785595624](https://github.com/moorwald/mautic4-legacy/actions/runs/39785595624), using source commit `35a1b154a3b705754c827037a101a9064d66c32a`. All scoped checks were repeated successfully, including four SMTP cases and cleanup. The [public GitHub Release](https://github.com/moorwald/mautic4-legacy/releases/tag/v4.4.13-php74-r1) includes the complete source/licence handoff and both pushed manifests. **GHCR public visibility is still pending: anonymous registry access returned HTTP 401 after publication. Do not claim public image availability yet.** This is NOT a production recommendation or complete drop-in/security certification.
 
-Local tags:
-- `moorwald/mautic4-legacy:4.4.13-php74-r1-apache`
-- `moorwald/mautic4-legacy:4.4.13-php74-r1-fpm`
+Uploaded tags:
+- `ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-apache`
+- `ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-fpm`
+
+Publication evidence:
+- Ordinary verification on the exact release commit: [39784684318](https://github.com/moorwald/mautic4-legacy/actions/runs/39784684318), success.
+- Manual release report `m4qa-7fe9e62e74/report.json`, completed 2026-10-22 13:21:50 UTC, all four cases/SMTP and cleanup successful.
+- Pushed manifest config IDs match BOTH the tested image review and corresponding-source manifest: Apache `sha256:69287377d29f0b1068cdb05dba54823568d808511867ffe80ebc867e2a819834`; FPM `sha256:dbe1795d69dba62662a1ac98f365f6210403cbb1c4e670dec1c65a4d5b4f604f`. These are config IDs, not registry manifest digests.
+- Public source bundle: 751,697,920 bytes, SHA-256 `0de137e52e106eda37198546d19fcb19e05fc82d785bce662c1f2be48860ee3a`. Public source-manifest/SHA256SUMS downloads were verified anonymously against the publication evidence.
+- Remaining action: owner opens [package settings](https://github.com/orgs/moorwald/packages/container/mautic4-legacy/settings), sets Public, then both anonymous manifests/pulls and runtime package revisions must be verified. The local gh session lacks read:packages and the isolated browser is not authenticated; no privileges were silently extended.
 
 ## Verified matrix
-Static/audit/assessment/release-gate regression tests pass (see current CI results for the exact count). Build inputs match the recorded lock; local builds are not pushed registry manifests.
+26 static/audit/assessment/release/source regression tests pass. Build inputs match the recorded lock; only the exact images tested by the manual job were pushed. The local preparation evidence below is supplemented by the actual publication evidence above.
 
 Evidence: ignored `artifacts/m4qa-4762527a15/report.json`, completed 2026-10-22 13:07:25 UTC. Built/tested runtime source: `2c9f119`; final CI repeats all tests on the actual publication commit. Four cases: Apache/FPM x fresh Mautic 4.4.13 / existing Mautic 4.4.12.
 

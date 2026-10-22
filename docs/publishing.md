@@ -7,7 +7,7 @@ Sven authorized the public moorwald GitHub repository and a repository-driven im
   - ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-apache
   - ghcr.io/moorwald/mautic4-legacy:4.4.13-php74-r1-fpm
 
-This approval does not authorize changes to running installations, new Mautic features or dependency modernization. No image has been published yet.
+This approval does not authorize changes to running installations, new Mautic features or dependency modernization. The first pair was uploaded by manual workflow 39785595624 with its public source Release; package public visibility/anonymous retrieval remain pending as recorded in status.md.
 
 ## What ordinary pushes do
 Pushes to main and pull requests run a read-only verification job: build both amd64 images, test isolated fresh/existing installations, report inherited advisories and verify the byte-identical upstream payload. Evidence artifacts exclude passwords, raw SQL, customer data, downloaded archives and general logs.

@@ -93,7 +93,7 @@ The bundled application contains `composer/composer` **2.2.12** and its own advi
 | ARM64 without a tested patched build | Do not publish/claim ARM64 support; this need not block an accurately labelled amd64-only release |
 | Full application audit, feature development or migration to newer Mautic | Outside project scope |
 
-Still required for an honest first publication: a scoped review of our image/runtime changes and PHP-fix evidence, the bounded compatibility smoke checks appropriate to the claim, corresponding-source/license handling, accurate warnings/source references and explicit manual release approval through the configured publication path. A full green audit of unsupported Mautic 4 is NOT required by this scope and is not promised.
+The completed first-publication checks, with evidence in status.md, cover: a scoped review of our image/runtime changes and PHP-fix evidence, the bounded compatibility smoke checks appropriate to the claim, corresponding-source/license handling, accurate warnings/source references and explicit manual release approval through the configured publication path. A full green audit of unsupported Mautic 4 is NOT required by this scope and is not promised.
 
 The assessment identifies no changed application payload and no newly enabled critical-library attack path in its bounded checks. This is not a statement that the new OS/runtime or arbitrary deployment configuration has zero vulnerabilities. The completed bounded image-layer review stays focused on what we introduce; evidence and limits are recorded in status.md.
 
